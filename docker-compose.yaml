@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  wb_db:
+    container_name: wb_db
+    image: postgres
+    restart: always
+    environment:
+        POSTGRES_DB: ${DB_NAME}
+        POSTGRES_USER: ${DB_USER}
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - .env
+    volumes:
+      - data_base:/data_base
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+  api_server:
+    depends_on:
+      - wb_db
+    container_name: wb_api_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # environment:
+    #   - PYTHONUNBUFFERED=1
+    ports:
+      - '8000:8000'
+    command:
+      - /bin/sh
+      - -c
+      - "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
+      - "python3 manage.py createsuperuser --noinput"
+      
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+    networks:
+      - app-network
+    env_file:
+      - .env
+    restart: always
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  data_base:
+      
