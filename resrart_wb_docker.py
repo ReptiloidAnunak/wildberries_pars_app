@@ -1,5 +1,5 @@
 from docker import DockerClient
-
+import subprocess
 
 
 def kill_project_containers():
@@ -17,5 +17,9 @@ def kill_project_containers():
 
 
 
-if __name__ == '__main__':
+def restart_all_containers():
     kill_project_containers()
+    subprocess.run('docker-compose up -d --build', shell=True)
+
+if __name__ == '__main__':
+    restart_all_containers()

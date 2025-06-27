@@ -43,7 +43,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'product',
+    'rest_framework',
 ]
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ]
+}
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -138,7 +149,60 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# Logging
+
+# wb_pars_api_server/settings.py
+
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+LOGS_DIR = BASE_DIR / "logs"
+os.makedirs(LOGS_DIR, exist_ok=True)
+
 LOGS_DIR = BASE_DIR / 'logs'
+LOGS_API = LOGS_DIR / 'api_server.logs'
+LOGS_PARSER = LOGS_DIR / 'parser.logs'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} - {name} - {levelname} - {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'api_file': {
+            'class': 'logging.FileHandler',
+            'filename': LOGS_DIR / 'api_server.logs',
+            'formatter': 'verbose',
+        },
+        'parser_file': {
+            'class': 'logging.FileHandler',
+            'filename': LOGS_DIR / 'parser.logs',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'API': {
+            'handlers': ['api_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'PARSER': {
+            'handlers': ['parser_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
+
+
+
 
 
 # Parser settings
@@ -157,3 +221,19 @@ REQUEST_HEADERS = {
  }
 
 REGION_CODE = os.getenv('REGION_CODE')
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
