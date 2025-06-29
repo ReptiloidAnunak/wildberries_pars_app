@@ -4,6 +4,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from django.shortcuts import redirect
 from logger import log_api
 
 from wb_pars_api_server.settings import LOGS_API, LOGS_PARSER
@@ -21,20 +22,24 @@ log_api.info(f"[LOGGER] LOGS_API = {LOGS_API!r}")
 log_api.info(f"[LOGGER] LOGS_PARSER = {LOGS_PARSER!r}")
 
 
-
-
 @method_decorator(csrf_exempt, name='dispatch')
 class ParseProduct(APIView):
-    def  get(self, request):
+    def get(self, request):
         log_api.info(f"GET - products page")
         products = Product.objects.all()
         return render(request, 'products_page.html', {'products': products})
     
     def post(self, request):
         Product.objects.all().delete()
-        log_api.info(f"GET - products page")
+
         category = request.data.get('category_name')
-        log_api.info(f"POST: products_category: {category}")
+        price_min = request.data.get('price_min')
+        price_max = request.data.get('price_max')
+        rating = request.data.get('rating')
+        review = request.data.get('review')
+        
+        log_api.info(f"POST:\n\nproducts_category: {category}, price_min: {price_min}, price_max: {price_max} rating: {rating} review: {review}\n\n")
+
         parsed_prods_json = get_wb_products(category)
         prods_json_lst = parsed_prods_json['data']['products']
         log_api.info(f"Len: {len(prods_json_lst)}")
@@ -61,4 +66,4 @@ class ParseProduct(APIView):
                               review_amount=prod["feedbacks"],
                               )
             product.save()
-        return Response(response_dict, status=status.HTTP_200_OK)
+        return redirect('products-list')
