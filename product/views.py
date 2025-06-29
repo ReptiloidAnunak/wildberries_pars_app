@@ -27,7 +27,8 @@ log_api.info(f"[LOGGER] LOGS_PARSER = {LOGS_PARSER!r}")
 class ParseProduct(APIView):
     def  get(self, request):
         log_api.info(f"GET - products page")
-        return render(request, template_name='products_page.html')
+        products = Product.objects.all()
+        return render(request, 'products_page.html', {'products': products})
     
     def post(self, request):
         log_api.info(f"GET - products page")
@@ -53,8 +54,8 @@ class ParseProduct(APIView):
         for prod in prods_json_lst:
             product = Product(id=prod['id'],
                               title=prod["name"],
-                              price_original=prod["priceU"],
-                              price=prod["salePriceU"],
+                              price_original=prod["priceU"] / 100,
+                              price=prod["salePriceU"] / 100,
                               rating=prod["rating"],
                               review_amount=prod["feedbacks"],
                               )
