@@ -211,14 +211,21 @@ USERAGENT = os.getenv('USERAGENT')
 WB_SEARCH_URL = os.getenv('WB_SEARCH_URL')
 
 REQUEST_HEADERS = {
- "User-Agent": USERAGENT,
- "Access-Control-Allow-Credentials": "true",
- "Access-Control-Allow-Headers":"Authorization,Accept,Origin,DNT,User-Agent,Content-Type,Wb-AppType,Wb-AppVersion,Xwbuid,Site-Locale,X-Clientinfo,Storage-Type,Data-Version,Model-Version,__wbl, x-captcha-id",
- "Access-Control-Allow-Methods":"GET,OPTIONS",
- "Access-control-Allow-Origin":"https://www.wildberries.ru",
- "Content-Encoding":"gzip",
- "Content-Type":"application/json charset=utf-8"
- }
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                  "AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/122.0.0.0 Safari/537.36",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "Origin": "https://www.wildberries.ru",
+    "Referer": "https://www.wildberries.ru/",
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "same-site",
+    "DNT": "1"
+}
+
 
 REGION_CODE = os.getenv('REGION_CODE')
 

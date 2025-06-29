@@ -15,11 +15,11 @@ def kill_project_containers():
             if 'wildberries' in tag:
                 docker_client.images.remove(image=img.id, force=True)
 
-
-
 def restart_all_containers():
     kill_project_containers()
     subprocess.run('docker-compose up -d --build', shell=True)
+    subprocess.run('docker ps -a', shell=True)
+
 
 if __name__ == '__main__':
     restart_all_containers()

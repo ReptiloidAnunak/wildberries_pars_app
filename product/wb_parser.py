@@ -1,7 +1,10 @@
 import requests
 from fake_useragent import UserAgent
-from drafts.draft_settings import REQUEST_HEADERS, WB_SEARCH_URL, REGION_CODE
+
+from wb_pars_api_server.settings import REQUEST_HEADERS, WB_SEARCH_URL, REGION_CODE
+from logger import log_parser
 import json
+
 
 user_agent = UserAgent()
 
@@ -10,6 +13,9 @@ import requests
 
 
 def run_wb_parsing(query: str):
+    log_parser.info("Run Wieldbrerries parser")
+    log_parser.info(f'Category recieved: {query}')
+    
     url = WB_SEARCH_URL
     print(WB_SEARCH_URL)
     
@@ -28,19 +34,12 @@ def run_wb_parsing(query: str):
     headers = REQUEST_HEADERS
     response = requests.get(url, 
                             params=params, 
-                            headers=headers)
+                            headers=headers)    
+    data_json = response.json()
     
-    data = response.json()
-    print(data)
+    log_parser.info(str(data_json))
+    return data_json
 
-    with open("result.json", "w") as file:
-        file.write(json.dumps(data))
+    # with open("result.json", "w") as file:
+    #     file.write(json.dumps(response.json()))
 
-
-def run_parser_mod():
-    run_wb_parsing("кастрюля")
-
-
-
-if __name__ == '__main__':
-    run_parser_mod()
