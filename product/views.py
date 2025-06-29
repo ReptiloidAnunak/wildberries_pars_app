@@ -10,19 +10,25 @@ from wb_pars_api_server.settings import LOGS_API, LOGS_PARSER
 from product.models import Product
 
 from parsers.wb_parser import get_wb_products
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+
+
 
 log_api.info('🌐 API Server is running ')
 
 log_api.info(f"[LOGGER] LOGS_API = {LOGS_API!r}")
 log_api.info(f"[LOGGER] LOGS_PARSER = {LOGS_PARSER!r}")
 
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')
 class ParseProduct(APIView):
     def  get(self, request):
         log_api.info(f"GET - products page")
         return render(request, template_name='products_page.html')
     
-    @csrf_exempt
     def post(self, request):
         log_api.info(f"GET - products page")
         category = request.data.get('category_name')
@@ -33,12 +39,15 @@ class ParseProduct(APIView):
         
         response_dict = {"Widlberries parsing products": None}
 
+        ok_data_msg = '🟢 Products data has been received'
+        no_data_msg = '🔴 Products data hast not been received'
+
         if len(prods_json_lst) > 1:
-            log_api.info('🟢 Products data has been received')
-            response_dict['Widlberries parsing products'] = '🟢 Products data has been received'
+            log_api.info(ok_data_msg)
+            response_dict['Widlberries parsing products'] = ok_data_msg
         else:
-            log_api.info('🔴 Products data hast not been received')
-            response_dict['Widlberries parsing products'] = '🔴 Products data hast not been received'
+            log_api.info(no_data_msg)
+            response_dict['Widlberries parsing products'] = no_data_msg
             return Response(response_dict, status=status.HTTP_200_OK)
         
         for prod in prods_json_lst:
@@ -51,7 +60,3 @@ class ParseProduct(APIView):
                               )
             product.save()
         return Response(response_dict, status=status.HTTP_200_OK)
-
-
-
-        
