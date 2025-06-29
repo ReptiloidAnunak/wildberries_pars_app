@@ -7,9 +7,12 @@ with open('/home/arjuna/python_dev/ test_tasks/wildberries_pars_app/result.json'
     print(content)
 
     products_lst = content['data']['products'][:10]
-    print(products_lst)
 
     for product in products_lst:
         print(product["name"])
+        print(product['priceU'] / 100)
+        print(product['salePriceU'] / 100)
+        print(product["rating"])
+        print(product["feedbacks"])
         
         print('____________________')
