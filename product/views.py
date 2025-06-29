@@ -31,6 +31,7 @@ class ParseProduct(APIView):
         return render(request, 'products_page.html', {'products': products})
     
     def post(self, request):
+        Product.objects.all().delete()
         log_api.info(f"GET - products page")
         category = request.data.get('category_name')
         log_api.info(f"POST: products_category: {category}")
