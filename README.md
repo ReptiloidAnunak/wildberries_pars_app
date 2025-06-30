@@ -22,26 +22,17 @@ This Django-based web application allows you to parse and display product data f
 
 1. **Clone the repository:**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/ReptiloidAnunak/wildberries_pars_app
    cd wildberries_pars_app
    ```
 
 2. **Install dependencies:**
    ```bash
-   pip install -r requirements.txt
+   docker-compose up -d --build
    ```
 
-3. **Apply migrations:**
-   ```bash
-   python manage.py migrate
-   ```
 
-4. **Run the server:**
-   ```bash
-   python manage.py runserver
-   ```
-
-5. **Open in your browser:**
+3. **Open in your browser:**
    ```
    http://127.0.0.1:8000/api/products/
    ```
