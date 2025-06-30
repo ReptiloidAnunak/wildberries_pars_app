@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Wildberries Parser</title>
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
         body {
@@ -17,12 +16,10 @@
             flex-direction: column;
             min-height: 100vh;
         }
-
         h1 {
             color: rgb(244, 250, 255);
             margin-top: 20px;
         }
-
         .container {
             width: 100%;
             max-width: 800px;
@@ -30,7 +27,6 @@
             flex-direction: column;
             align-items: center;
         }
-
         .form-top {
             background: rgb(165, 160, 231);
             padding: 20px;
@@ -40,27 +36,11 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             margin: 20px auto;
         }
-
-        .parser_input {
-            position: fixed;
-            bottom: 20px;
-            left: 10px;
-            width: 400px;
-            max-width: 90%;
-            background: rgb(41, 76, 105);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-            color: white;
-        }
-
         label {
             display: block;
             margin-top: 15px;
             font-weight: bold;
         }
-
         input[type="text"],
         input[type="number"] {
             width: 100%;
@@ -69,7 +49,6 @@
             border: 1px solid #ccc;
             border-radius: 6px;
         }
-
         input[type="submit"] {
             margin-top: 20px;
             padding: 10px 20px;
@@ -79,11 +58,9 @@
             border-radius: 6px;
             cursor: pointer;
         }
-
         input[type="submit"]:hover {
             background-color: #27ae60;
         }
-
         table {
             border-collapse: collapse;
             width: 100%;
@@ -92,30 +69,25 @@
             overflow: hidden;
             margin-top: 20px;
         }
-
         th, td {
             border: 1px solid black;
             padding: 10px;
             text-align: left;
         }
-
         th {
             background-color: #2ecc71;
             color: white;
         }
-
         tr:hover {
             background-color: #f2f2f2;
         }
     </style>
 </head>
 <body>
-
     <div class="container">
         <h1>Парсер Wildberries</h1>
-
-        <!-- 🔝 Ввод категории — наверху -->
         <form class="form-top" action="/api/products/" method="post">
+            {% csrf_token %}
             <label for="category_name">Категория товаров:</label>
             <input
                 type="text"
@@ -124,56 +96,75 @@
                 placeholder="например, паяльник"
                 value="{{ category|default_if_none:'' }}"
             />
-            <input type="submit" value="Поиск" class="submit-btn-top" />
+
+            <label for="price_min">Мин. цена (в рублях):</label>
+            <input type="number" id="price_min" name="price_min" min="0" value="{{ price_min|default_if_none:'' }}" />
+
+            <label for="price_max">Макс. цена (в рублях):</label>
+            <input type="number" id="price_max" name="price_max" min="0" value="{{ price_max|default_if_none:'' }}" />
+
+            <label for="rating">Мин. рейтинг:</label>
+            <input type="number" id="rating" name="rating" min="0" max="5" step="0.1" value="{{ rating|default_if_none:'' }}" />
+
+            <label for="review">Мин. кол-во отзывов:</label>
+            <input type="number" id="review" name="review" min="0" value="{{ review|default_if_none:'' }}" />
+
+            <input type="submit" value="Начать парсинг" />
         </form>
 
-        <!-- 📦 Таблица с товарами -->
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>
+                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' %}{{k}}={{v}}&{% endif %}{% endfor %}sort={% if sort == 'id' %}-id{% else %}id{% endif %}">
+                            ID
+                            {% if sort == 'id' %}▲{% elif sort == '-id' %}▼{% endif %}
+                        </a>
+                    </th>
                     <th>Название</th>
-                    <th>Цена</th>
-                    <th>Цена без скидок</th>
-                    <th>Рейтинг</th>
-                    <th>Отзывы</th>
+                    <th>
+                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' %}{{k}}={{v}}&{% endif %}{% endfor %}sort={% if sort == 'price_original' %}-price_original{% else %}price_original{% endif %}">
+                            Цена без скидки
+                            {% if sort == 'price_original' %}▲{% elif sort == '-price_original' %}▼{% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' %}{{k}}={{v}}&{% endif %}{% endfor %}sort={% if sort == 'price' %}-price{% else %}price{% endif %}">
+                            Цена
+                            {% if sort == 'price' %}▲{% elif sort == '-price' %}▼{% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' %}{{k}}={{v}}&{% endif %}{% endfor %}sort={% if sort == 'rating' %}-rating{% else %}rating{% endif %}">
+                            Рейтинг
+                            {% if sort == 'rating' %}▲{% elif sort == '-rating' %}▼{% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' %}{{k}}={{v}}&{% endif %}{% endfor %}sort={% if sort == 'review_amount' %}-review_amount{% else %}review_amount{% endif %}">
+                            Отзывы
+                            {% if sort == 'review_amount' %}▲{% elif sort == '-review_amount' %}▼{% endif %}
+                        </a>
+                    </th>
                 </tr>
             </thead>
             <tbody>
                 {% for product in products %}
-                    <tr>
-                        <td>{{ product.id }}</td>
-                        <td>{{ product.title }}</td>
-                        <td>{{ product.price }}</td>
-                        <td>{{ product.price_original }}</td>
-                        <td>{{ product.rating }}</td>
-                        <td>{{ product.review_amount }}</td>
-                    </tr>
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.title }}</td>
+                    <td>{{ product.price_original }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.rating }}</td>
+                    <td>{{ product.review_amount }}</td>
+                </tr>
                 {% empty %}
-                    <tr>
-                        <td colspan="6" style="text-align:center;">Нет товаров в БД</td>
-                    </tr>
+                <tr>
+                    <td colspan="6" style="text-align:center;">Нет товаров</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
-
-        <!-- 🔻 Фильтры — фиксированы снизу -->
-        <form class="parser_input" action="/api/products/" method="get">
-            <label for="price_min">Мин. цена (в рублях):</label>
-            <input type="number" id="price_min" name="price_min" min="0" placeholder="{{ price_min }}" />
-
-            <label for="price_max">Макс. цена (в рублях):</label>
-            <input type="number" id="price_max" name="price_max" min="0" placeholder="{{ price_max }}" />
-
-            <label for="rating">Мин. рейтинг:</label>
-            <input type="number" id="rating" name="rating" min="0" max="5" step="0.1" placeholder="{{ rating }}" />
-
-            <label for="review">Мин. кол-во отзывов:</label>
-            <input type="number" id="review" name="review" min="0" placeholder="{{ review }}" />
-
-            <input type="submit" value="Начать парсинг" />
-        </form>
     </div>
-
 </body>
 </html>
