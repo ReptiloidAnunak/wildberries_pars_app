@@ -1,62 +1,72 @@
-<h1>Widberry parser</h1>
+# Wildberries Parser App
 
-Selenium parsers. Auto-browser that collects orders from https://funpay.com and https://www.g2g.com/ and send it to web-server.
-User input is required to solve the captcha. After login is autonom.
-<br><br>
+This Django-based web application allows you to parse and display product data from Wildberries by category, with flexible filtering and sorting options.
 
-<h2>Run app</h2>
-Run in the terminal follow commands:
+## Features
 
-```bash
-./run_menu.sh
-```
+- **Category Parsing:** Enter a product category to fetch and store data from Wildberries.
+- **Filtering:** Filter products by minimum/maximum price, minimum rating, and minimum number of reviews.
+- **Sorting:** Sort results by price, original price, rating, or number of reviews (ascending/descending).
+- **Web Interface:** User-friendly form for input and a table for displaying results.
+- **Persistent Filters:** All filter and sort parameters are preserved in the URL for easy sharing and navigation.
+- **Logging:** Key actions and errors are logged for debugging and monitoring.
 
+## How It Works
 
-<h2>Logs</h2>
+1. **Enter a category and filter parameters** in the form and submit.
+2. The app parses products from Wildberries using the specified category.
+3. Products are saved to the database and displayed in a sortable, filterable table.
+4. You can adjust filters and sorting directly from the web interface.
 
-Logs directory: `/logs`
+## Installation
 
-<h4>Run logs in Grafana</h4>
+1. **Clone the repository:**
+   ```bash
+   git clone <your-repo-url>
+   cd wildberries_pars_app
+   ```
 
-```bash
-cd monitoring && docker-compose up -d
-```
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-See your parsers logs there on Dashboard:<br>
-http://localhost:3000
+3. **Apply migrations:**
+   ```bash
+   python manage.py migrate
+   ```
 
-Your initial login data:<br>
+4. **Run the server:**
+   ```bash
+   python manage.py runserver
+   ```
 
-Login:`admin`<br>
-Password: `admin`<br>
+5. **Open in your browser:**
+   ```
+   http://127.0.0.1:8000/api/products/
+   ```
 
-Open dashboards menu:
-http://localhost:3000/dashboard/new?orgId=1
+## Usage
 
-After your registragion and login your should set your dashboard with logs.
+- Fill in the category and any desired filters.
+- Click "Start Parsing" to fetch and display products.
+- Click on table headers to sort by that column (click again to reverse order).
+- All filters and sorting are preserved in the URL for easy bookmarking.
 
-Add Loki to Data sources (http://localhost:3000/connections/datasources)
+## Project Structure
 
-Add `http://loki:3100` to the Connection URL field:
+- `product/views.py` — Main logic for handling requests, parsing, filtering, and sorting.
+- `templates/products_page.html` — Main web interface.
+- `product/models.py` — Product model definition.
+- `parsers/wb_parser.py` — Wildberries parsing logic.
+- `logger.py` — Logging configuration.
 
+## Notes
 
-![alt text](doc/image.png)
+- The app uses Django REST Framework for API views.
+- CSRF protection is disabled for demonstration purposes; enable it for production.
+- Logging is configured via `logger.py` and settings.
 
-Save this changes.
+---
 
-Click to Explore:
-
-![alt text](doc/image-1.png)
-
-
-Enter the job request: `{job="python_project_logs"}`
-
-![alt text](doc/image-2.png)
-
-
-Click "Add to dashboard" and save it.
-
-![alt text](doc/image-3.png)
-
-Ready!
-
+**Developed by ReptiloidAnunak**

@@ -115,12 +115,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>
-                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' %}{{k}}={{v}}&{% endif %}{% endfor %}sort={% if sort == 'id' %}-id{% else %}id{% endif %}">
-                            ID
-                            {% if sort == 'id' %}▲{% elif sort == '-id' %}▼{% endif %}
-                        </a>
-                    </th>
+                    <th>ID</th>
                     <th>Название</th>
                     <th>
                         <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' %}{{k}}={{v}}&{% endif %}{% endfor %}sort={% if sort == 'price_original' %}-price_original{% else %}price_original{% endif %}">
