@@ -1,13 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Wildberries Parser</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
-        
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -21,7 +20,7 @@
 
         h1 {
             color: rgb(244, 250, 255);
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
 
         .container {
@@ -30,6 +29,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+        }
+
+        .form-top {
+            background: rgb(165, 160, 231);
+            padding: 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin: 20px auto;
         }
 
         .parser_input {
@@ -43,16 +52,7 @@
             border-radius: 12px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             z-index: 1000;
-        }
-
-
-        form {
-            background: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            width: 100%;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            margin-top: 30px;
+            color: white;
         }
 
         label {
@@ -69,6 +69,7 @@
             border: 1px solid #ccc;
             border-radius: 6px;
         }
+
         input[type="submit"] {
             margin-top: 20px;
             padding: 10px 20px;
@@ -78,25 +79,31 @@
             border-radius: 6px;
             cursor: pointer;
         }
+
         input[type="submit"]:hover {
             background-color: #27ae60;
         }
+
         table {
             border-collapse: collapse;
             width: 100%;
             background-color: #fff;
             border-radius: 12px;
             overflow: hidden;
+            margin-top: 20px;
         }
+
         th, td {
             border: 1px solid black;
             padding: 10px;
             text-align: left;
         }
+
         th {
             background-color: #2ecc71;
             color: white;
         }
+
         tr:hover {
             background-color: #f2f2f2;
         }
@@ -107,6 +114,20 @@
     <div class="container">
         <h1>Парсер Wildberries</h1>
 
+        <!-- 🔝 Ввод категории — наверху -->
+        <form class="form-top" action="/api/products/" method="post">
+            <label for="category_name">Категория товаров:</label>
+            <input
+                type="text"
+                id="category_name"
+                name="category_name"
+                placeholder="например, паяльник"
+                value="{{ category|default_if_none:'' }}"
+            />
+            <input type="submit" value="Поиск" class="submit-btn-top" />
+        </form>
+
+        <!-- 📦 Таблица с товарами -->
         <table>
             <thead>
                 <tr>
@@ -136,21 +157,19 @@
             </tbody>
         </table>
 
-        <form class="parser_input" action="/api/products/" method="post">
-            <label for="category_name">Категория товаров:</label>
-            <input type="text" id="category_name" name="category_name" />
-
+        <!-- 🔻 Фильтры — фиксированы снизу -->
+        <form class="parser_input" action="/api/products/" method="get">
             <label for="price_min">Мин. цена (в рублях):</label>
-            <input type="number" id="price_min" name="price_min" min="0" />
+            <input type="number" id="price_min" name="price_min" min="0" placeholder="{{ price_min }}" />
 
             <label for="price_max">Макс. цена (в рублях):</label>
-            <input type="number" id="price_max" name="price_max" min="0" />
+            <input type="number" id="price_max" name="price_max" min="0" placeholder="{{ price_max }}" />
 
             <label for="rating">Мин. рейтинг:</label>
-            <input type="number" id="rating" name="rating" min="0" max="5" step="0.1" />
+            <input type="number" id="rating" name="rating" min="0" max="5" step="0.1" placeholder="{{ rating }}" />
 
             <label for="review">Мин. кол-во отзывов:</label>
-            <input type="number" id="review" name="review" min="0" />
+            <input type="number" id="review" name="review" min="0" placeholder="{{ review }}" />
 
             <input type="submit" value="Начать парсинг" />
         </form>
