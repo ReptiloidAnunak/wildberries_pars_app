@@ -8,6 +8,7 @@ from logger import log_api
 
 from wb_pars_api_server.settings import LOGS_API, LOGS_PARSER
 from product.models import Product
+from product.filter import filter_products
 
 from parsers.wb_parser import get_wb_products
 from django.utils.decorators import method_decorator
@@ -25,75 +26,11 @@ class ParseProduct(APIView):
         log_api.info(f"GET - products page")
         log_api.info(f"GET QUERY PARAMS: {request.GET.dict()}")
 
-        category = request.GET.get('category')
-        price_min = request.GET.get('price_min')
-        price_max = request.GET.get('price_max')
-        rating = request.GET.get('rating')
-        review = request.GET.get('review')
-        
+        prods_dict = filter_products(request)
 
-        log_api.info(f"GET - {category} {price_min} {price_max} {rating} {review}")
-
-        products = Product.objects.all()
-        if price_min:
-            try:
-                products = products.filter(price__gte=float(price_min))
-            except ValueError:
-                pass
-
-        if price_max:
-            try:
-                products = products.filter(price__lte=float(price_max))
-            except ValueError:
-                pass
-
-        if rating:
-            try:
-                products = products.filter(rating__gte=float(rating))
-            except ValueError:
-                pass
-
-        if review:
-            try:
-                products = products.filter(review_amount__gte=int(review))
-            except ValueError:
-                pass
-        
-        sort_mapping = {
-            'review': 'review_amount',
-            'rating': 'rating',
-            'price': 'price',
-            'price_original': 'price_original'
-        }
-
-        sort = request.GET.get('sort')
-        actual_sort_field = None
-
-        if sort:
-            reverse = sort.startswith('-')
-            clean_sort = sort.lstrip('-')
-
-            if clean_sort in sort_mapping:
-                actual_sort_field = sort_mapping[clean_sort]
-                if reverse:
-                    actual_sort_field = '-' + actual_sort_field
-
-
-        if actual_sort_field:
-            products = products.order_by(actual_sort_field)
-
-        # actual_sort_field
-
-
-        return render(request, 'products_page.html', {
-            'products': products,
-            'category': category,
-            'price_min': price_min,
-            'price_max': price_max,
-            'rating': rating,
-            'review': review,
-            'sort': sort
-        })
+        return render(request, 
+                      'products_page.html', 
+                      prods_dict)
 
     def post(self, request):
         Product.objects.all().delete()
@@ -108,6 +45,7 @@ class ParseProduct(APIView):
         log_api.info(f"POST:\n\nproducts_category: {category}, price_min: {price_min}, price_max: {price_max} rating: {rating} review: {review} sort: {sort}\n\n")
 
         parsed_prods_json = get_wb_products(category)
+        
         try:
             prods_json_lst = parsed_prods_json['data']['products']
         except KeyError:
