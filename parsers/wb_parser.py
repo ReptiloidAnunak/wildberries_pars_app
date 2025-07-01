@@ -5,6 +5,7 @@ from logger import log_parser
 import json
 import random
 
+# Wildberries parser to fetch product data based on a search query.
 def get_wb_products(query: str, page=1):
     log_parser.info('▶️ Running Wildberries parser ...')
 
@@ -31,7 +32,9 @@ def get_wb_products(query: str, page=1):
         "Origin": "https://www.wildberries.ru",
         "Referer": "https://www.wildberries.ru/",
     }
-    
+
+    log_parser.info(f"Reques url: {url}")
+
     proxy = random.choice(PROXY_LIST)
     response = requests.get(url, headers=headers, params=params, proxies=proxy, timeout=10)
     log_parser.info(f"Wildberries Response Status: {response.status_code}")
@@ -39,11 +42,9 @@ def get_wb_products(query: str, page=1):
     return response.json()
 
 
-if __name__ == "__main__":
-    data = get_wb_products("смартфон", page=1)
-    result_json = json.dumps(data, indent=2, ensure_ascii=False)
+# if __name__ == "__main__":
+#     data = get_wb_products("смартфон", page=1)
+#     result_json = json.dumps(data, indent=2, ensure_ascii=False)
 
-    # print(result_json)
+#     print(result_json)
 
-    # with open('result.json', 'w') as file:
-    #     file.write(result_json)
