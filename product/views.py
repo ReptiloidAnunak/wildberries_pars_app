@@ -48,7 +48,7 @@ class ParseProduct(APIView):
         hist = Counter(bins)
         labels = [f"{b}-{b + bin_size - 1}" for b in sorted(hist)]
 
-        prices_labels = [p for p in products_all]
+        prices_labels = [f"{b}-{b + bin_size - 1}" for b in sorted(hist)]
         prices_values = [hist[b] for b in sorted(hist)]
 
 

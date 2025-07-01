@@ -236,39 +236,46 @@
     </script>
 
 
-    <div class="chart-container" style="margin-top: 40px;">
+    <div class="br_grafs" style="margin-top: 40px;">
         <br>
     </div>
 
-    <canvas id="priceHistogram"></canvas>
+    <canvas id="myChart" style="width:100%;max-width:1000px; background-color: white"></canvas>
+
     <script>
-    const ctx2 = document.getElementById('priceHistogram').getContext('2d');
-    const priceChart = new Chart(ctx2, {
-        type: 'bar',
-        data: {
-            labels: {{ prices_labels|safe }},
-            datasets: [{
-                label: 'Кол-во товаров',
-                data: {{ prices_values|safe }},
-                backgroundColor: 'rgba(153, 102, 255, 0.6)',
-                borderColor: 'rgba(153, 102, 255, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: { display: true, text: 'Количество товаров' }
-                },
-                x: {
-                    title: { display: true, text: 'Диапазоны цен (руб.)' }
+        var xValues = {{ prices_labels|safe }}; // Цены товаров
+        var yValues = {{ prices_values|safe }}; // Количество товаров по ценовым категориям
+
+        // Генерация случайных цветов
+        var barColors = xValues.map(() => {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            return `rgb(${r}, ${g}, ${b})`;
+        });
+
+        const ctx2 = document.getElementById("myChart").getContext("2d");
+        new Chart(ctx2, {
+            type: "bar",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: "Цены vs кол-во товаров"
+                    }
                 }
             }
-        }
-    });
+        });
     </script>
-
 
 
 </body>
