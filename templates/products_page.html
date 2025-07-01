@@ -31,10 +31,13 @@
             background: rgb(165, 160, 231);
             padding: 20px;
             border-radius: 12px;
-            width: 100%;
-            max-width: 400px;
+            width: 320px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            margin: 20px auto;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            opacity: 0.97;
         }
         label {
             display: block;
@@ -82,54 +85,36 @@
             background-color: #f2f2f2;
         }
         .pagination {
-            margin-top: 20px;
+            margin: 20px 0;
             text-align: center;
-            background-color:rgb(75, 63, 238);
-            padding: 10px;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
         .pagination a {
+            color: #2ecc71;
             margin: 0 10px;
             text-decoration: none;
-            color: #2ecc71;
             font-weight: bold;
         }
         .pagination span {
             margin: 0 10px;
         }
-
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Парсер Wildberries</h1>
-        <form class="form-top" action="/api/products/" method="post">
-            {% csrf_token %}
-            <label for="category_name">Категория товаров:</label>
-            <input
-                type="text"
-                id="category_name"
-                name="category_name"
-                placeholder="например, паяльник"
-                value="{{ category|default_if_none:'' }}"
-            />
-
-            <label for="price_min">Мин. цена (в рублях):</label>
-            <input type="number" id="price_min" name="price_min" min="0" value="{{ price_min|default_if_none:'' }}" />
-
-            <label for="price_max">Макс. цена (в рублях):</label>
-            <input type="number" id="price_max" name="price_max" min="0" value="{{ price_max|default_if_none:'' }}" />
-
-            <label for="rating">Мин. рейтинг:</label>
-            <input type="number" id="rating" name="rating" min="0" max="5" step="0.1" value="{{ rating|default_if_none:'' }}" />
-
-            <label for="review">Мин. кол-во отзывов:</label>
-            <input type="number" id="review" name="review" min="0" value="{{ review|default_if_none:'' }}" />
-
-            <input type="submit" value="Начать парсинг" />
-        </form>
-
+        <div class="pagination">
+            {% if products.has_previous %}
+                <a href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{k}}={{v}}&{% endif %}{% endfor %}page={{ products.previous_page_number }}">← Назад</a>
+            {% else %}
+                <span class="disabled">← Назад</span>
+            {% endif %}
+            <span>Страница {{ products.number }} из {{ products.paginator.num_pages }}</span>
+            {% if products.has_next %}
+                <a href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{k}}={{v}}&{% endif %}{% endfor %}page={{ products.next_page_number }}">Вперёд →</a>
+            {% else %}
+                <span class="disabled">Вперёд →</span>
+            {% endif %}
+        </div>
         <table>
             <thead>
                 <tr>
@@ -177,23 +162,34 @@
                 </tr>
                 {% endfor %}
             </tbody>
-            <div class="pagination">
-                {% if products.has_previous %}
-                    <a href="?page={{ products.previous_page_number }}{{ request.GET.urlencode|cut:'page='|yesno:'&,' }}" class="prev">← Назад</a>
-                {% else %}
-                    <span class="disabled">← Назад</span>
-                {% endif %}
-                <span>Страница {{ products.number }} из {{ products.paginator.num_pages }}</span>
-                {% if products.has_next %}
-                    <a href="?page={{ products.next_page_number }}{{ request.GET.urlencode|cut:'page='|yesno:'&,' }}" class="next">Вперёд →</a>
-                {% else %}
-                    <span class="disabled">Вперёд →</span>
-                {% endif %}
-            </div>
-
-
-
         </table>
+
     </div>
+    <!-- Форма закреплена в правом нижнем углу -->
+    <form class="form-top" action="/api/products/" method="post">
+        {% csrf_token %}
+        <label for="category_name">Категория товаров:</label>
+        <input
+            type="text"
+            id="category_name"
+            name="category_name"
+            placeholder="например, паяльник"
+            value="{{ category|default_if_none:'' }}"
+        />
+
+        <label for="price_min">Мин. цена (в рублях):</label>
+        <input type="number" id="price_min" name="price_min" min="0" value="{{ price_min|default_if_none:'' }}" />
+
+        <label for="price_max">Макс. цена (в рублях):</label>
+        <input type="number" id="price_max" name="price_max" min="0" value="{{ price_max|default_if_none:'' }}" />
+
+        <label for="rating">Мин. рейтинг:</label>
+        <input type="number" id="rating" name="rating" min="0" max="5" step="0.1" value="{{ rating|default_if_none:'' }}" />
+
+        <label for="review">Мин. кол-во отзывов:</label>
+        <input type="number" id="review" name="review" min="0" value="{{ review|default_if_none:'' }}" />
+
+        <input type="submit" value="Начать парсинг" />
+    </form>
 </body>
 </html>

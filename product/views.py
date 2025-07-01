@@ -63,9 +63,9 @@ class ParseProduct(APIView):
         if sort:
             products = products.order_by(sort)
 
-        # Пагинация
+
         page = request.GET.get('page', 1)
-        paginator = Paginator(products, 10)  # 10 товаров на страницу
+        paginator = Paginator(products, 20)
 
         try:
             products_page = paginator.page(page)
@@ -75,14 +75,14 @@ class ParseProduct(APIView):
             products_page = paginator.page(paginator.num_pages)
 
         return render(request, 'products_page.html', {
-            'products': products_page,  # ВАЖНО: только текущая страница!
+            'products': products_page,
             'category': category,
             'price_min': price_min,
             'price_max': price_max,
             'rating': rating,
             'review': review,
             'sort': sort,
-            'request': request,  # чтобы работал request.GET в шаблоне
+            'request': request,
         })
 
     def post(self, request):
