@@ -81,6 +81,24 @@
         tr:hover {
             background-color: #f2f2f2;
         }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+            background-color:rgb(75, 63, 238);
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .pagination a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        .pagination span {
+            margin: 0 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -159,6 +177,22 @@
                 </tr>
                 {% endfor %}
             </tbody>
+            <div class="pagination">
+                {% if products.has_previous %}
+                    <a href="?page={{ products.previous_page_number }}{{ request.GET.urlencode|cut:'page='|yesno:'&,' }}" class="prev">← Назад</a>
+                {% else %}
+                    <span class="disabled">← Назад</span>
+                {% endif %}
+                <span>Страница {{ products.number }} из {{ products.paginator.num_pages }}</span>
+                {% if products.has_next %}
+                    <a href="?page={{ products.next_page_number }}{{ request.GET.urlencode|cut:'page='|yesno:'&,' }}" class="next">Вперёд →</a>
+                {% else %}
+                    <span class="disabled">Вперёд →</span>
+                {% endif %}
+            </div>
+
+
+
         </table>
     </div>
 </body>

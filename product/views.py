@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from django.shortcuts import redirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.urls import reverse
 from logger import log_api
 
@@ -22,54 +23,66 @@ log_api.info(f"[LOGGER] LOGS_PARSER = {LOGS_PARSER!r}")
 @method_decorator(csrf_exempt, name='dispatch')
 class ParseProduct(APIView):
     def get(self, request):
-
         log_api.info(f"GET - products page")
         log_api.info(f"GET QUERY PARAMS: {request.GET.dict()}")
 
-        category = request.GET.get('category')
-        price_min = request.GET.get('price_min')
-        price_max = request.GET.get('price_max')
-        rating = request.GET.get('rating')
-        review = request.GET.get('review')
-        
-        log_api.info(f"GET - {category} {price_min} {price_max} {rating} {review}")
+        category = request.GET.get('category', '')
+        price_min = request.GET.get('price_min', '')
+        price_max = request.GET.get('price_max', '')
+        rating = request.GET.get('rating', '')
+        review = request.GET.get('review', '')
+        sort = request.GET.get('sort', '')
 
-        products = filter_products(category, price_min, price_max, rating, review)
-        
-        sort_mapping = {
-            'review': 'review_amount',
-            'rating': 'rating',
-            'price': 'price',
-            'price_original': 'price_original'
-        }
+        log_api.info(f"GET - {category} {price_min} {price_max} {rating} {review} {sort}")
 
-        sort = request.GET.get('sort')
-        actual_sort_field = None
+        products = Product.objects.all()
+        if price_min:
+            try:
+                products = products.filter(price__gte=float(price_min))
+            except ValueError:
+                pass
+
+        if price_max:
+            try:
+                products = products.filter(price__lte=float(price_max))
+            except ValueError:
+                pass
+
+        if rating:
+            try:
+                products = products.filter(rating__gte=float(rating))
+            except ValueError:
+                pass
+
+        if review:
+            try:
+                products = products.filter(review_amount__gte=int(review))
+            except ValueError:
+                pass
 
         if sort:
-            reverse = sort.startswith('-')
-            clean_sort = sort.lstrip('-')
+            products = products.order_by(sort)
 
-            if clean_sort in sort_mapping:
-                actual_sort_field = sort_mapping[clean_sort]
-                if reverse:
-                    actual_sort_field = '-' + actual_sort_field
+        # Пагинация
+        page = request.GET.get('page', 1)
+        paginator = Paginator(products, 10)  # 10 товаров на страницу
 
-
-        if actual_sort_field:
-            products = products.order_by(actual_sort_field)
-
-        # actual_sort_field
-
+        try:
+            products_page = paginator.page(page)
+        except PageNotAnInteger:
+            products_page = paginator.page(1)
+        except EmptyPage:
+            products_page = paginator.page(paginator.num_pages)
 
         return render(request, 'products_page.html', {
-            'products': products,
+            'products': products_page,  # ВАЖНО: только текущая страница!
             'category': category,
             'price_min': price_min,
             'price_max': price_max,
             'rating': rating,
             'review': review,
-            'sort': sort
+            'sort': sort,
+            'request': request,  # чтобы работал request.GET в шаблоне
         })
 
     def post(self, request):
