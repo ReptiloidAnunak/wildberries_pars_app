@@ -6,6 +6,8 @@ from django.shortcuts import redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.urls import reverse
 from logger import log_api
+import math
+from collections import Counter
 
 from wb_pars_api_server.settings import LOGS_API, LOGS_PARSER
 from product.models import Product
@@ -35,34 +37,29 @@ class ParseProduct(APIView):
 
         log_api.info(f"GET - {category} {price_min} {price_max} {rating} {review} {sort}")
 
-        products = Product.objects.all()
-        if price_min:
-            try:
-                products = products.filter(price__gte=float(price_min))
-            except ValueError:
-                pass
 
-        if price_max:
-            try:
-                products = products.filter(price__lte=float(price_max))
-            except ValueError:
-                pass
+        products_all = Product.objects.all()
+        prices_all = [p.price for p in products_all if p.price is not None]
+        
 
-        if rating:
-            try:
-                products = products.filter(rating__gte=float(rating))
-            except ValueError:
-                pass
 
-        if review:
-            try:
-                products = products.filter(review_amount__gte=int(review))
-            except ValueError:
-                pass
+        bin_size = 500
+        bins = [bin_size * math.floor(p / bin_size) for p in prices_all]
+        hist = Counter(bins)
+        labels = [f"{b}-{b + bin_size - 1}" for b in sorted(hist)]
 
-        if sort:
-            products = products.order_by(sort)
+        prices_labels = [p for p in products_all]
+        prices_values = [hist[b] for b in sorted(hist)]
 
+
+        products = filter_products(
+            category=category,
+            price_min=price_min,
+            price_max=price_max,
+            rating=rating,
+            review=review,
+            sort=sort
+        )
 
         page = request.GET.get('page', 1)
         paginator = Paginator(products, 20)
@@ -74,6 +71,10 @@ class ParseProduct(APIView):
         except EmptyPage:
             products_page = paginator.page(paginator.num_pages)
 
+
+        labels = [f"rating: {p.rating}\nid: {p.id}" for p in products if p.rating is not None]
+        discounts = [(p.price_original - p.price) for p in products if p.price_original and p.price]
+
         return render(request, 'products_page.html', {
             'products': products_page,
             'category': category,
@@ -83,6 +84,10 @@ class ParseProduct(APIView):
             'review': review,
             'sort': sort,
             'request': request,
+            'labels': labels,
+            'discounts': discounts,
+            'prices_labels': prices_labels,
+            'prices_values': prices_values,
         })
 
     def post(self, request):

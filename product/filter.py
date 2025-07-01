@@ -10,7 +10,8 @@ def filter_products(
     price_min: Optional[str] = None,
     price_max: Optional[str] = None,
     rating: Optional[str] = None,
-    review: Optional[str] = None,) -> List[Product]:
+    review: Optional[str] = None,
+    sort: Optional[str] = None) -> List[Product]:
 
     log_api.info(f"GET - {category} {price_min} {price_max} {rating} {review}")
 
@@ -38,5 +39,8 @@ def filter_products(
             products = products.filter(review_amount__gte=int(review))
         except ValueError:
             pass
+
+    if sort:
+            products = products.order_by(sort)
     
     return products

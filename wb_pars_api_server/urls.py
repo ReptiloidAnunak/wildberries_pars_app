@@ -21,6 +21,4 @@ from product.views import ParseProduct
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/products/', ParseProduct.as_view(), name='products-list'),
-    path("chart_discount_rating/", chart_discount_vs_rating, name="discount-chart"),
-
 ]
