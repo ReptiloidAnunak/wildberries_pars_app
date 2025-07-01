@@ -8,9 +8,9 @@ from logger import log_api
 
 from wb_pars_api_server.settings import LOGS_API, LOGS_PARSER
 from product.models import Product
-from product.filter import filter_products
 
 from parsers.wb_parser import get_wb_products
+from product.filter import filter_products
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -26,11 +26,51 @@ class ParseProduct(APIView):
         log_api.info(f"GET - products page")
         log_api.info(f"GET QUERY PARAMS: {request.GET.dict()}")
 
-        prods_dict = filter_products(request)
+        category = request.GET.get('category')
+        price_min = request.GET.get('price_min')
+        price_max = request.GET.get('price_max')
+        rating = request.GET.get('rating')
+        review = request.GET.get('review')
+        
+        log_api.info(f"GET - {category} {price_min} {price_max} {rating} {review}")
 
-        return render(request, 
-                      'products_page.html', 
-                      prods_dict)
+        products = filter_products(category, price_min, price_max, rating, review)
+        
+        sort_mapping = {
+            'review': 'review_amount',
+            'rating': 'rating',
+            'price': 'price',
+            'price_original': 'price_original'
+        }
+
+        sort = request.GET.get('sort')
+        actual_sort_field = None
+
+        if sort:
+            reverse = sort.startswith('-')
+            clean_sort = sort.lstrip('-')
+
+            if clean_sort in sort_mapping:
+                actual_sort_field = sort_mapping[clean_sort]
+                if reverse:
+                    actual_sort_field = '-' + actual_sort_field
+
+
+        if actual_sort_field:
+            products = products.order_by(actual_sort_field)
+
+        # actual_sort_field
+
+
+        return render(request, 'products_page.html', {
+            'products': products,
+            'category': category,
+            'price_min': price_min,
+            'price_max': price_max,
+            'rating': rating,
+            'review': review,
+            'sort': sort
+        })
 
     def post(self, request):
         Product.objects.all().delete()
@@ -45,7 +85,6 @@ class ParseProduct(APIView):
         log_api.info(f"POST:\n\nproducts_category: {category}, price_min: {price_min}, price_max: {price_max} rating: {rating} review: {review} sort: {sort}\n\n")
 
         parsed_prods_json = get_wb_products(category)
-        
         try:
             prods_json_lst = parsed_prods_json['data']['products']
         except KeyError:

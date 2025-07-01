@@ -2,16 +2,15 @@
 
 from logger import log_api
 from product.models import Product
+from typing import List, Optional
 
 
-def filter_products(request) -> dict:
-
-    category = request.GET.get('category')
-    price_min = request.GET.get('price_min')
-    price_max = request.GET.get('price_max')
-    rating = request.GET.get('rating')
-    review = request.GET.get('review')
-    
+def filter_products(
+    category: Optional[str] = None,
+    price_min: Optional[str] = None,
+    price_max: Optional[str] = None,
+    rating: Optional[str] = None,
+    review: Optional[str] = None,) -> List[Product]:
 
     log_api.info(f"GET - {category} {price_min} {price_max} {rating} {review}")
 
@@ -40,35 +39,4 @@ def filter_products(request) -> dict:
         except ValueError:
             pass
     
-    sort_mapping = {
-        'review': 'review_amount',
-        'rating': 'rating',
-        'price': 'price',
-        'price_original': 'price_original'
-    }
-
-    sort = request.GET.get('sort')
-    actual_sort_field = None
-
-    if sort:
-        reverse = sort.startswith('-')
-        clean_sort = sort.lstrip('-')
-
-        if clean_sort in sort_mapping:
-            actual_sort_field = sort_mapping[clean_sort]
-            if reverse:
-                actual_sort_field = '-' + actual_sort_field
-
-
-    if actual_sort_field:
-        products = products.order_by(actual_sort_field)
-
-    return {
-            'products': products,
-            'category': category,
-            'price_min': price_min,
-            'price_max': price_max,
-            'rating': rating,
-            'review': review,
-            'sort': sort
-        }
+    return products
