@@ -1,5 +1,19 @@
 # Wildberries Parser App (demo)
 
+
+## Technologies Used
+
+- **Python 3.11+**
+- **Django** — main backend framework
+- **Django REST Framework** — for API endpoints
+- **PostgreSQL** — database (can be replaced with SQLite for testing)
+- **Docker & Docker Compose** — containerization and orchestration
+- **Grafana + Loki + Promtail** — log collection, storage, and visualization
+- **Chart.js** — data visualization on the frontend
+- **HTML/CSS/JS** — user interface
+
+---
+
 This Django-based web application allows you to parse and display product data from Wildberries by category, with flexible filtering and sorting options.
 
 Due to a limited number of proxies and the risk of being blocked, this version only parses the first page of requested category.
