@@ -89,3 +89,8 @@ body {
         .pagination span {
             margin: 0 10px;
         }
+        .input-narrow {
+            width: 80px !important;
+            min-width: 0;
+            display: inline-block;
+        }
