@@ -2,6 +2,9 @@
 
 This Django-based web application allows you to parse and display product data from Wildberries by category, with flexible filtering and sorting options.
 
+![Alt text](doc/images/main.png)
+
+
 ## Features
 
 - **Category Parsing:** Enter a product category to fetch and store data from Wildberries.
@@ -10,6 +13,11 @@ This Django-based web application allows you to parse and display product data f
 - **Web Interface:** User-friendly form for input and a table for displaying results.
 - **Persistent Filters:** All filter and sort parameters are preserved in the URL for easy sharing and navigation.
 - **Logging:** Key actions and errors are logged for debugging and monitoring.
+- **Grafs:**  Prices/products amount, discounts/products rates
+
+![Alt text](doc/images/graph.png)
+![Alt text](doc/images/graph2.png)
+
 
 ## How It Works
 
