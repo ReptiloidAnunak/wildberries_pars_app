@@ -4,6 +4,8 @@ This Django-based web application allows you to parse and display product data f
 
 Due to a limited number of proxies and the risk of being blocked, this version only parses the first page of requested category.
 
+⚠️ Warning: CSRF protection is disabled for demo purposes. Do not use this in production without enabling CSRF.
+
 ![Alt text](doc/images/main.png)
 
 
@@ -29,13 +31,17 @@ Due to a limited number of proxies and the risk of being blocked, this version o
    cd wildberries_pars_app
    ```
 
-2. **Install dependencies:**
+2. **Environment**
+
+   Put your .env file to the project`s root folder
+
+3. **Install dependencies:**
    ```bash
    docker-compose up -d --build
    ```
 
 
-3. **Open in your browser:**
+4. **Open in your browser:**
    ```
    http://127.0.0.1:8000/api/products/
    ```
@@ -48,12 +54,22 @@ Due to a limited number of proxies and the risk of being blocked, this version o
 4. You can adjust filters and sorting directly from the web interface.
 
 
+## Usage
+
+- Fill in the category and any desired filters.
+- Click "Start Parsing" to fetch and display products.
+- Click on table headers to sort by that column (click again to reverse order).
+- All filters and sorting are preserved in the URL for easy bookmarking.
+
 ## Grafana logs
 To see logs in Grafana you should run
 
 ```bash
 ./dev_tools/shell_scripts/run_grafana.sh
 ```
+
+Login Grafana: http://127.0.0.1:3000/login
+
 Grafana login:
 ```
 Login: admin
@@ -62,13 +78,6 @@ Password: admin
 How to setup: https://grafana.com/docs/grafana/latest/setup-grafana/
 
 ![Alt text](doc/images/grafana.png)
-
-## Usage
-
-- Fill in the category and any desired filters.
-- Click "Start Parsing" to fetch and display products.
-- Click on table headers to sort by that column (click again to reverse order).
-- All filters and sorting are preserved in the URL for easy bookmarking.
 
 ## Project Structure
 

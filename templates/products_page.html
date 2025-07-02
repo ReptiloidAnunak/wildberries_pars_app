@@ -11,6 +11,7 @@
 <body>
     <div class="container">
         <h1>Парсер Wildberries</h1>
+        <p>demo<p>
         <div class="pagination">
             {% if products.has_previous %}
                 <a href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{k}}={{v}}&{% endif %}{% endfor %}page={{ products.previous_page_number }}">← Назад</a>
