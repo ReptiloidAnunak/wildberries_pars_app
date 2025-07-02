@@ -1,6 +1,8 @@
-# Wildberries Parser App
+# Wildberries Parser App (demo)
 
 This Django-based web application allows you to parse and display product data from Wildberries by category, with flexible filtering and sorting options.
+
+Due to a limited number of proxies and the risk of being blocked, this version only parses the first page of requested category.
 
 ![Alt text](doc/images/main.png)
 
@@ -17,29 +19,6 @@ This Django-based web application allows you to parse and display product data f
 
 ![Alt text](doc/images/graph.png)
 ![Alt text](doc/images/graph2.png)
-
-
-## How It Works
-
-1. **Enter a category and filter parameters** in the form and submit.
-2. The app parses products from Wildberries using the specified category.
-3. Products are saved to the database and displayed in a sortable, filterable table.
-4. You can adjust filters and sorting directly from the web interface.
-
-
-## Grafana logs
-To see logs in Grafana you should run
-
-```bash
-cd monitoring && docker-compose up -d
-
-docker exec -it monitoring_grafana_1 grafana-cli admin reset-admin-password admin
-```
-Grafana login:
-```
-Login: admin
-Password: admin
-```
 
 
 ## Installation
@@ -60,6 +39,27 @@ Password: admin
    ```
    http://127.0.0.1:8000/api/products/
    ```
+
+## How It Works
+
+1. **Enter a category and filter parameters** in the form and submit.
+2. The app parses products from Wildberries using the specified category.
+3. Products are saved to the database and displayed in a sortable, filterable table.
+4. You can adjust filters and sorting directly from the web interface.
+
+
+## Grafana logs
+To see logs in Grafana you should run
+
+```bash
+./dev_tools/shell_scripts/run_grafana.sh
+```
+Grafana login:
+```
+Login: admin
+Password: admin
+```
+![Alt text](doc/images/grafana.png)
 
 ## Usage
 
