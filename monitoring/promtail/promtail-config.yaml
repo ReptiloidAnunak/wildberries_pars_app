@@ -15,4 +15,4 @@ scrape_configs:
           - localhost
         labels:
           job: python_project_logs
-          __path__: /var/log/mylogs/*.log
+          __path__: /var/log/mylogs/*.logs

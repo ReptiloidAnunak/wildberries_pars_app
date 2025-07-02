@@ -26,6 +26,22 @@ This Django-based web application allows you to parse and display product data f
 3. Products are saved to the database and displayed in a sortable, filterable table.
 4. You can adjust filters and sorting directly from the web interface.
 
+
+## Grafana logs
+To see logs in Grafana you should run
+
+```bash
+cd monitoring && docker-compose up -d
+
+docker exec -it monitoring_grafana_1 grafana-cli admin reset-admin-password admin
+```
+Grafana login:
+```
+Login: admin
+Password: admin
+```
+
+
 ## Installation
 
 1. **Clone the repository:**
