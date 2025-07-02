@@ -41,8 +41,6 @@ class ParseProduct(APIView):
         products_all = Product.objects.all()
         prices_all = [p.price for p in products_all if p.price is not None]
         
-
-
         bin_size = 500
         bins = [bin_size * math.floor(p / bin_size) for p in prices_all]
         hist = Counter(bins)

@@ -1,0 +1,99 @@
+{
+  "metadata": {
+    "catalog_type": "preset",
+    "catalog_value": "preset=500050858",
+    "normquery": "аромалампы",
+    "search_result": {},
+    "name": "аромалампа",
+    "rmi": "1",
+    "title": "аромалампа",
+    "rs": 100,
+    "qv": "AQEFAQIAASY9qO-w56RHKjKycyb3MxkxuqaBLGIumbAyI7sgia3rsYMqYKftG6oqAaOeslGrvKTXKbCtArGnrxCxW6wGMMatTqwVsDAuNy-iMGKxTCm1rBkue6gZri-sESzwMCmrEaa3KwUygyg-qCwtoK4mNECguCoJq5moVqyon4spDaoesEoskTA0pQ6vR6QlqbyfGJ4tKtGtH6xJKjue6igArBsxGKgeKxCs2ifQLW4sahcxI2YxF6leLG4sRq1hsC0eLCjWLX-t0CBHnPCjEyUZG6es7y3_JLgtGCzspNctnC1HK8mm-6hFJ-SsK6lWIiEt9iifMYCopKSpLXGq6SK5LaA"
+  },
+  "state": 0,
+  "version": 2,
+  "params": {
+    "version": 2,
+    "curr": "rub",
+    "dest": -1255987,
+    "payloadVersion": 1
+  },
+  "data": {
+    "products": [
+      {
+        "id": 302786331,
+        "time1": 2,
+        "time2": 42,
+        "wh": 117986,
+        "dtype": 4,
+        "dist": 902,
+        "root": 283123746,
+        "kindId": 0,
+        "brand": "INDI SHOP",
+        "brandId": 1040784,
+        "siteBrandId": 0,
+        "colors": [
+          {
+            "name": "белый",
+            "id": 16777215
+          }
+        ],
+        "subjectId": 5497,
+        "subjectParentId": 6249,
+        "name": "Шлиф стеклянный 11.5 см",
+        "entity": "аромалампы",
+        "matchId": 108907508,
+        "supplier": "INDI SHOP",
+        "supplierId": 283423,
+        "supplierRating": 4.8,
+        "supplierFlags": 12232,
+        "priceU": 129000,
+        "salePriceU": 72100,
+        "sale": 0,
+        "logisticsCost": 600,
+        "returnCost": 0,
+        "diffPrice": false,
+        "saleConditions": 134217728,
+        "pics": 3,
+        "rating": 5,
+        "reviewRating": 4.8,
+        "nmReviewRating": 4.8,
+        "feedbacks": 24,
+        "nmFeedbacks": 24,
+        "isAdult": true,
+        "volume": 6,
+        "viewFlags": 5775424,
+        "sizes": [
+          {
+            "name": "",
+            "origName": "0",
+            "rank": 0,
+            "optionId": 460108927,
+            "wh": 117986,
+            "time1": 2,
+            "time2": 42,
+            "dtype": 4,
+            "returnCost": 0,
+            "sign": "AAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+            "payload": "+jBiaBsnDBJ/tGwbFQlMzvXIekXFlNVP1k55O6V1OMhnbJC3B0AA"
+          }
+        ],
+        "totalQuantity": 33,
+        "log": {
+          "cpm": 0,
+          "promotion": 1,
+          "promoPosition": 1,
+          "position": 13,
+          "advertId": 25698266,
+          "tp": "c"
+        },
+        "logs": "MijH0shItAC01pZDE74UZh6ChTyzFxR5p+Wfr/f/lHuI22rmFbHFCGCXAQzdkUE28bwQRhQ",
+        "meta": {
+          "tokens": [],
+          "presetId": 500050858
+        }
+      }
+    ],
+    "total": 1
+  }
+}
