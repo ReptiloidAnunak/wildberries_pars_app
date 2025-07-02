@@ -59,6 +59,8 @@ Grafana login:
 Login: admin
 Password: admin
 ```
+How to setup: https://grafana.com/docs/grafana/latest/setup-grafana/
+
 ![Alt text](doc/images/grafana.png)
 
 ## Usage
