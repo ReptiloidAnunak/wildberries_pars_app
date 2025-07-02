@@ -33,7 +33,7 @@ Due to a limited number of proxies and the risk of being blocked, this version o
 
 2. **Environment**
 
-   Put your .env file to the project`s root folder
+   Put your `.env` file to the project`s root folder
 
 3. **Install dependencies:**
    ```bash
